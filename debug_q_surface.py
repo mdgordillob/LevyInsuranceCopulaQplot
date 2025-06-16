@@ -11,19 +11,7 @@ import matplotlib.pyplot as plt
 import time
 import sys
 import os
-
-# Add the build directory to the Python path to find the C++ module
-script_dir = os.path.dirname(os.path.abspath(__file__))
-build_dir = os.path.join(script_dir, 'build')
-sys.path.append(build_dir)
-
-# Import the C++ extension
-try:
-    import copula_calculations
-except ImportError as e:
-    print(f"Error importing C++ module: {e}")
-    print(f"Ensure the module exists in the '{build_dir}' directory.")
-    sys.exit(1)
+from levy_copula_pricing.python_interface import calculate_maxima_cpp
 
 # --- Plotting Function for Detailed Q Contour ---
 # (Copied from main script, includes NaN handling)
@@ -109,7 +97,7 @@ for j, current_eta in enumerate(eta_fixed): # Outer loop for eta
 
         try:
             # Call C++ function requesting the full matrix with the current eta
-            maxima_list = copula_calculations.calculate_maxima_cpp(
+            maxima_list = calculate_maxima_cpp(
                 current_theta, current_eta, P1_plot, P2_plot, return_q_matrix=True
             )
 

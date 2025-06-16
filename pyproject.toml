@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "cmake>=3.18", "pybind11>=2.6"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "levy-copula-pricing"
+version = "0.1.0"
+authors = [
+  { name="mdgordillob", email="mdgordillob@unal.edu.co" },
+]
+description = "A Python library for demand-based pricing in multi-line insurance using a Lévy-copula approach, with C++ optimized calculations."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy",
+    "matplotlib",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/mdgordillob/LevyInsuranceCopulaQplot"
+"Bug Tracker" = "https://github.com/mdgordillob/LevyInsuranceCopulaQplot/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["levy_copula_pricing*"]
+
+[tool.setuptools.package-data]
+"levy_copula_pricing" = ["_copula_calculations.cpp"] # Include C++ source for sdist
+
+[tool.setuptools.dynamic]
+# This section is for dynamic metadata, if needed.
+# For CMake builds, setuptools-cmake-build might handle this.
+
+[tool.cmake-build]
+# Configuration for setuptools-cmake-build
+# This tells setuptools to use CMake to build the C++ extension
+# The source directory for CMake is the current directory (where CMakeLists.txt is)
+cmake_source_dir = "."
+# Build directory for CMake (relative to project root)
+build_dir = "build"
+# Install directory for CMake (relative to build_dir)
+install_dir = "levy_copula_pricing" # Install compiled module into the Python package
+# Arguments to pass to cmake
+cmake_args = [
+    "-DPYBIND11_FINDPYTHON=ON",
+    "-DCMAKE_BUILD_TYPE=Release", # Or Debug
+]
+# Arguments to pass to cmake --build
+build_args = [
+    "--config", "Release", # Or Debug
+    "--target", "_copula_calculations_cpp_module", # Build only our specific module
+]

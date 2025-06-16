@@ -5,18 +5,7 @@ import matplotlib.pyplot as plt
 import time
 import sys
 import os
-
-# Add the build directory to the Python path to find the C++ module
-script_dir = os.path.dirname(os.path.abspath(__file__))
-build_dir = os.path.join(script_dir, 'build')
-sys.path.insert(0, build_dir)
-
-try:
-    import copula_calculations
-except ImportError as e:
-    print(f"Error importing C++ module: {e}")
-    print(f"Ensure the module exists in the '{build_dir}' directory and has been built.")
-    sys.exit(1)
+from levy_copula_pricing.python_interface import calculate_maxima_cpp
 
 # --- Global Model Parameters (Constants) ---
 # These should match the constants in copula_calculations.cpp
@@ -109,7 +98,7 @@ for j, current_eta in enumerate(etas_to_plot):
 
         try:
             # Call C++ function requesting the full matrix
-            maxima_list = copula_calculations.calculate_maxima_cpp(
+            maxima_list = calculate_maxima_cpp(
                 current_theta, current_eta, P1_plot, P2_plot, return_q_matrix=True
             )
 

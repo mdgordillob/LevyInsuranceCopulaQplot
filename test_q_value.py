@@ -1,21 +1,8 @@
-import os
-import sys
 import numpy as np
+from levy_copula_pricing.python_interface import calculate_maxima_cpp, F1_inv, F2_inv
 
-# Add the build directory to the Python path to find the C++ module
-script_dir = os.path.dirname(os.path.abspath(__file__))
-build_dir = os.path.join(script_dir, 'build')
-sys.path.insert(0, build_dir) # Changed from append to insert(0)
-
-try:
-    import copula_calculations
-except ImportError as e:
-    print(f"Error importing C++ module: {e}")
-    print(f"Ensure the module exists in the '{build_dir}' directory and has been built and installed.")
-    print(f"sys.path: {sys.path}") # Added for debugging
-    sys.exit(1)
-
-print(f"Loaded copula_calculations from: {copula_calculations.__file__}") # Added for debugging
+# No need for sys.path manipulation or explicit try-except for module import here
+# as the package installation handles it.
 
 # Parameters for the test
 p1_test = 4.0
@@ -32,7 +19,7 @@ print(f"Calculating Q for p1={p1_test}, p2={p2_test}, eta={eta_test}, theta={the
 
 # Call the C++ function
 # The C++ function returns a list of dictionaries, with the first being the global max
-results = copula_calculations.calculate_maxima_cpp(
+results = calculate_maxima_cpp(
     theta_test, eta_test, P1_plot_single, P2_plot_single, return_q_matrix=False
 )
 
@@ -44,7 +31,7 @@ else:
 
 print("\n--- Testing F_inv functions ---")
 test_x = 0.5
-f1_inv_cpp_val = copula_calculations.F1_inv_cpp(test_x)
-f2_inv_cpp_val = copula_calculations.F2_inv_cpp(test_x)
-print(f"F1_inv_cpp({test_x}) from C++ module: {f1_inv_cpp_val}")
-print(f"F2_inv_cpp({test_x}) from C++ module: {f2_inv_cpp_val}")
+f1_inv_val = F1_inv(test_x)
+f2_inv_val = F2_inv(test_x)
+print(f"F1_inv({test_x}) from C++ module: {f1_inv_val}")
+print(f"F2_inv({test_x}) from C++ module: {f2_inv_val}")
